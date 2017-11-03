@@ -1,11 +1,12 @@
 package main
 
 import (
-	"bufio"
+	// "bufio"
 	"fmt"
 	"log"
 	"net"
-	"os"
+	// "os"
+	"github.com/arjunkrishnababu96/tictactoe"
 )
 
 func main() {
@@ -16,21 +17,35 @@ func main() {
 	}
 	defer conn.Close()
 
-	input := bufio.NewScanner(os.Stdin)
-	input.Scan()
-
-	n, err := sendMsg(conn, input.Text())
-	if err != nil {
-		log.Fatalf(" error while writing: ", err)
+	n, err := playTicTacToe(conn)
+	if err != nil	{
+		log.Fatalf(" main() n=%v: %v", n, err)
 	}
-	fmt.Printf(" %v bytes written\n", n)
 
-	var msg string
-	msg, n, err = receiveMsg(conn)
-	if err != nil {
-		log.Fatalf(" error while receiving: ", err)
+	// input := bufio.NewScanner(os.Stdin)
+	// input.Scan()
+	//
+	// n, err := sendMsg(conn, input.Text())
+	// if err != nil {
+	// 	log.Fatalf(" error while writing: ", err)
+	// }
+	// fmt.Printf(" %v bytes written\n", n)
+	//
+	// var msg string
+	// msg, n, err = receiveMsg(conn)
+	// if err != nil {
+	// 	log.Fatalf(" error while receiving: ", err)
+	// }
+	// fmt.Println("Server says: ", msg)
+}
+
+func playTicTacToe(conn net.Conn) (int, error)  {
+	board := tictactoe.GetEmptyBoard()
+	n, err := conn.Write([]byte(board))
+	if err != nil	{
+		return n, fmt.Errorf("playTicTacToe error while writing %v", board)
 	}
-	fmt.Println("Server says: ", msg)
+	return 0, nil
 }
 
 func sendMsg(conn net.Conn, msg string) (n int, err error) {
