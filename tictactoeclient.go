@@ -54,11 +54,14 @@ func playTicTacToe(conn net.Conn) (int, error)  {
 		}
 		fmt.Printf(" SENT: %q\n", board)
 
-		responseBytes := make([]byte, 100)
-		n, err = conn.Read(responseBytes)
-		if strings.Contains(string(responseBytes), "END")	{
+		bytesFromServer := make([]byte, 11)
+		n, err = conn.Read(bytesFromServer)
+		if strings.Contains(string(bytesFromServer), "END")	{
 			break
 		}
+
+		board = string(bytesFromServer)
+		fmt.Printf(" RECEIVED: %q\n", board)
 	}
 	return 0, nil
 }
