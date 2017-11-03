@@ -19,7 +19,7 @@ func main() {
 	defer conn.Close()
 
 	n, err := playTicTacToe(conn)
-	if err != nil	{
+	if err != nil {
 		log.Fatalf(" main() n=%v: %v", n, err)
 	}
 
@@ -40,23 +40,23 @@ func main() {
 	// fmt.Println("Server says: ", msg)
 }
 
-func playTicTacToe(conn net.Conn) (int, error)  {
+func playTicTacToe(conn net.Conn) (int, error) {
 	const CLIENTSYMBOL = 'X'
-	squares := []int{0,1,2,4,5,6,8,9,10}
+	squares := []int{0, 1, 2, 4, 5, 6, 8, 9, 10}
 	board := tictactoe.GetEmptyBoard()
 
 	for {
 		board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
 
 		n, err := conn.Write([]byte(board))
-		if err != nil	{
+		if err != nil {
 			return n, fmt.Errorf("playTicTacToe error while writing %v", board)
 		}
 		fmt.Printf(" SENT: %q\n", board)
 
 		bytesFromServer := make([]byte, 11)
 		n, err = conn.Read(bytesFromServer)
-		if strings.Contains(string(bytesFromServer), "END")	{
+		if strings.Contains(string(bytesFromServer), "END") {
 			break
 		}
 
