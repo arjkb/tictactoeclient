@@ -1,11 +1,13 @@
 package main
 
 import (
-	"bufio"
+	// "bufio"
 	"fmt"
 	"log"
 	"net"
-	"os"
+	// "os"
+	"github.com/arjunkrishnababu96/tictactoe"
+	"strings"
 )
 
 func main() {
@@ -16,37 +18,68 @@ func main() {
 	}
 	defer conn.Close()
 
-	input := bufio.NewScanner(os.Stdin)
-	input.Scan()
-
-	n, err := sendMsg(conn, input.Text())
+	n, err := playTicTacToe(conn)
 	if err != nil {
-		log.Fatalf(" error while writing: ", err)
+		log.Fatalf(" main() n=%v: %v", n, err)
 	}
-	fmt.Printf(" %v bytes written\n", n)
 
-	var msg string
-	msg, n, err = receiveMsg(conn)
-	if err != nil {
-		log.Fatalf(" error while receiving: ", err)
-	}
-	fmt.Println("Server says: ", msg)
+	// input := bufio.NewScanner(os.Stdin)
+	// input.Scan()
+	//
+	// n, err := sendMsg(conn, input.Text())
+	// if err != nil {
+	// 	log.Fatalf(" error while writing: ", err)
+	// }
+	// fmt.Printf(" %v bytes written\n", n)
+	//
+	// var msg string
+	// msg, n, err = receiveMsg(conn)
+	// if err != nil {
+	// 	log.Fatalf(" error while receiving: ", err)
+	// }
+	// fmt.Println("Server says: ", msg)
 }
 
-func sendMsg(conn net.Conn, msg string) (n int, err error) {
-	n, err = conn.Write([]byte(msg))
-	if err != nil {
-		return n, fmt.Errorf(" error while writing: ", err)
+func playTicTacToe(conn net.Conn) (int, error) {
+	const CLIENTSYMBOL = 'X'
+	squares := []int{0, 1, 2, 4, 5, 6, 8, 9, 10}
+	board := tictactoe.GetEmptyBoard()
+
+	for {
+		board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
+
+		n, err := conn.Write([]byte(board))
+		if err != nil {
+			return n, fmt.Errorf("playTicTacToe error while writing %v", board)
+		}
+		fmt.Printf(" SENT: %q\n", board)
+
+		bytesFromServer := make([]byte, 11)
+		n, err = conn.Read(bytesFromServer)
+		if strings.Contains(string(bytesFromServer), "END") {
+			break
+		}
+
+		board = string(bytesFromServer)
+		fmt.Printf(" RECEIVED: %q\n", board)
 	}
-	return n, nil
+	return 0, nil
 }
 
-func receiveMsg(conn net.Conn) (msg string, n int, err error) {
-	var msg_bytes = make([]byte, 100)
-	n, err = conn.Read(msg_bytes)
-	if err != nil {
-		return msg, n, fmt.Errorf(" receiveMsg: %v", err)
-	}
-
-	return string(msg_bytes), n, err
-}
+// func sendMsg(conn net.Conn, msg string) (n int, err error) {
+// 	n, err = conn.Write([]byte(msg))
+// 	if err != nil {
+// 		return n, fmt.Errorf(" error while writing: ", err)
+// 	}
+// 	return n, nil
+// }
+//
+// func receiveMsg(conn net.Conn) (msg string, n int, err error) {
+// 	var msg_bytes = make([]byte, 100)
+// 	n, err = conn.Read(msg_bytes)
+// 	if err != nil {
+// 		return msg, n, fmt.Errorf(" receiveMsg: %v", err)
+// 	}
+//
+// 	return string(msg_bytes), n, err
+// }
