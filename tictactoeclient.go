@@ -1,12 +1,10 @@
 package main
 
 import (
-	// "bufio"
 	"fmt"
+	"github.com/arjunkrishnababu96/tictactoe"
 	"log"
 	"net"
-	// "os"
-	"github.com/arjunkrishnababu96/tictactoe"
 	"strings"
 )
 
