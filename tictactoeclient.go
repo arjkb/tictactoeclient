@@ -22,22 +22,6 @@ func main() {
 	if err != nil {
 		log.Fatalf(" main() n=%v: %v", n, err)
 	}
-
-	// input := bufio.NewScanner(os.Stdin)
-	// input.Scan()
-	//
-	// n, err := sendMsg(conn, input.Text())
-	// if err != nil {
-	// 	log.Fatalf(" error while writing: ", err)
-	// }
-	// fmt.Printf(" %v bytes written\n", n)
-	//
-	// var msg string
-	// msg, n, err = receiveMsg(conn)
-	// if err != nil {
-	// 	log.Fatalf(" error while receiving: ", err)
-	// }
-	// fmt.Println("Server says: ", msg)
 }
 
 func playTicTacToe(conn net.Conn) (int, error) {
