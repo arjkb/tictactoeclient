@@ -70,7 +70,8 @@ InfiniteLoop:
 		} else {
 			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
 			if err != nil {
-				sboard = "END"
+				// no more empty positions
+				sboard = tictactoe.TIE
 			}
 		}
 
