@@ -23,27 +23,78 @@ func main() {
 }
 
 func playTicTacToe(conn net.Conn) (int, error) {
-	const CLIENTSYMBOL = 'X'
+	const (
+		CLIENTWON = "client won"
+		SERVERWON = "server won"
+
+		CLIENTSYMBOL = 'X'
+		SERVERSYMBOL = 'O'
+	)
+
 	squares := []int{0, 1, 2, 4, 5, 6, 8, 9, 10}
-	board := tictactoe.GetEmptyBoard()
+
+	var rboard string
+	var sboard string = tictactoe.GetEmptyBoard()
+
+	var n int
+	var err error
+
+	var clientWon, serverWon bool
+
+	// make first move before the infinite loop starts
+	sboard, _ = tictactoe.MakeRandomMove(sboard, squares, CLIENTSYMBOL)
+	n, err = conn.Write([]byte(sboard))
+	if err != nil {
+		return n, fmt.Errorf("playTicTacToe first move error while writing %v", sboard)
+	}
+	fmt.Printf(" S: %q\n", sboard)
 
 	for {
-		board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
-
-		n, err := conn.Write([]byte(board))
-		if err != nil {
-			return n, fmt.Errorf("playTicTacToe error while writing %v", board)
-		}
-		fmt.Printf(" S: %q\n", board)
-
 		bytesFromServer := make([]byte, 11)
 		n, err = conn.Read(bytesFromServer)
+		if err != nil {
+			return n, fmt.Errorf("playTicTacToe() error reading from server %v", err)
+		}
+
+		rboard = string(bytesFromServer)
 		if strings.Contains(string(bytesFromServer), "END") {
 			break
 		}
 
-		board = string(bytesFromServer)
-		fmt.Printf(" R: %q\n", board)
+		if !tictactoe.IsValidBoard(rboard) {
+			return n, fmt.Errorf("playTicTacToe() server sent invalid board (%v) %v", rboard, err)
+		}
+		fmt.Printf(" R: %q\n", rboard)
+
+		if mvCnt, _ := tictactoe.GetMoveDifference(sboard, rboard); mvCnt != 1 {
+			return n, fmt.Errorf("playTicTacToe() server made %d moves", mvCnt)
+		}
+
+		if tictactoe.HasWon(rboard, SERVERSYMBOL) {
+			sboard = SERVERWON
+			serverWon = true
+		} else if win, ptrn := tictactoe.CanWinNext(rboard, CLIENTSYMBOL); win {
+			sboard, _ = tictactoe.MakeWinMove(rboard, ptrn, CLIENTSYMBOL)
+			clientWon = true
+		} else if win, ptrn := tictactoe.CanWinNext(rboard, SERVERSYMBOL); win {
+			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, CLIENTSYMBOL)
+		} else {
+			sboard, err = tictactoe.MakeRandomMove(rboard, squares, CLIENTSYMBOL)
+			if err != nil {
+				sboard = "END"
+			}
+		}
+
+		n, err = conn.Write([]byte(sboard))
+		if err != nil {
+			return n, fmt.Errorf("playTicTacToe() error while writing %v", sboard)
+		}
+		fmt.Printf(" S: %q\n", sboard)
+
+		if sboard == "END" || serverWon || clientWon {
+			break
+		}
 	}
+
 	return 0, nil
 }
