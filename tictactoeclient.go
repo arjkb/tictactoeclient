@@ -5,7 +5,6 @@ import (
 	"github.com/arjunkrishnababu96/tictactoe"
 	"log"
 	"net"
-	"strings"
 )
 
 func main() {
@@ -57,7 +56,7 @@ func playTicTacToe(conn net.Conn) (int, error) {
 		}
 
 		rboard = string(bytesFromServer)
-		if strings.Contains(string(bytesFromServer), "END") {
+		if rboard == "END"	{
 			break
 		}
 
