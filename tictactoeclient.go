@@ -45,6 +45,7 @@ func playTicTacToe(conn net.Conn) (int, error) {
 	}
 	fmt.Printf(" S: %q\n", sboard)
 
+InfiniteLoop:
 	for {
 		bytesFromServer := make([]byte, 11)
 		n, err = conn.Read(bytesFromServer)
@@ -53,7 +54,7 @@ func playTicTacToe(conn net.Conn) (int, error) {
 		}
 
 		rboard = string(bytesFromServer)
-		if rboard == "END"	{
+		if rboard == "END" {
 			break
 		}
 
@@ -87,8 +88,15 @@ func playTicTacToe(conn net.Conn) (int, error) {
 		}
 		fmt.Printf(" S: %q\n", sboard)
 
-		if sboard == "END" || serverWon || clientWon {
-			break
+		switch {
+		case sboard == "END":
+			break InfiniteLoop
+		case serverWon:
+			fmt.Println(SERVERWON)
+			break InfiniteLoop
+		case clientWon:
+			fmt.Println(CLIENTWON)
+			break InfiniteLoop
 		}
 	}
 
