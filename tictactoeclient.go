@@ -30,18 +30,15 @@ func playTicTacToe(conn net.Conn) (int, error) {
 		SERVERSYMBOL = 'O'
 	)
 
-	squares := []int{0, 1, 2, 4, 5, 6, 8, 9, 10}
-
 	var rboard string
 	var sboard string = tictactoe.GetEmptyBoard()
+	var clientWon, serverWon bool
 
 	var n int
 	var err error
 
-	var clientWon, serverWon bool
-
 	// make first move before the infinite loop starts
-	sboard, _ = tictactoe.MakeRandomMove(sboard, squares, CLIENTSYMBOL)
+	sboard, _ = tictactoe.MakeRandomMove(sboard, tictactoe.AllSquares, CLIENTSYMBOL)
 	n, err = conn.Write([]byte(sboard))
 	if err != nil {
 		return n, fmt.Errorf("playTicTacToe first move error while writing %v", sboard)
@@ -78,7 +75,7 @@ func playTicTacToe(conn net.Conn) (int, error) {
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, SERVERSYMBOL); win {
 			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, CLIENTSYMBOL)
 		} else {
-			sboard, err = tictactoe.MakeRandomMove(rboard, squares, CLIENTSYMBOL)
+			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, CLIENTSYMBOL)
 			if err != nil {
 				sboard = "END"
 			}
