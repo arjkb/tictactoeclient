@@ -25,29 +25,44 @@ func main() {
 func playTicTacToe(conn net.Conn) (int, error) {
 	const CLIENTSYMBOL = 'X'
 	squares := []int{0, 1, 2, 4, 5, 6, 8, 9, 10}
-	board := tictactoe.GetEmptyBoard()
 
-	// var started bool
+	var rboard string
+	var sboard string = tictactoe.GetEmptyBoard()
+
+	var n int
+	var err error
 
 	// make first move before the infinite loop starts
-	board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
-	n, err := conn.Write([]byte(board))
+	sboard, _ = tictactoe.MakeRandomMove(sboard, squares, CLIENTSYMBOL)
+	n, err = conn.Write([]byte(sboard))
 	if err != nil {
-		return n, fmt.Errorf("playTicTacToe first move error while writing %v", board)
+		return n, fmt.Errorf("playTicTacToe first move error while writing %v", sboard)
 	}
-	fmt.Printf(" S: %q\n", board)
+	fmt.Printf(" S: %q\n", sboard)
 
 	for {
-		// board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
-
 		bytesFromServer := make([]byte, 11)
 		n, err = conn.Read(bytesFromServer)
+		if err != nil	{
+			return n, fmt.Errorf("playTicTacToe() error reading from server %v", err)
+		}
+
+		rboard = string(bytesFromServer)
 		if strings.Contains(string(bytesFromServer), "END") {
 			break
 		}
 
-		board = string(bytesFromServer)
-		fmt.Printf(" R: %q\n", board)
+		if !tictactoe.IsValidBoard(rboard)	{
+			return n, fmt.Errorf("playTicTacToe() server sent invalid board (%v) %v", rboard, err)
+		}
+		fmt.Printf(" R: %q\n", rboard)
+
+		if mvCnt, _ := tictactoe.GetMoveDifference(sboard, rboard); mvCnt != 1	{
+			return n, fmt.Errorf("playTicTacToe() server made %d moves", mvCnt)
+		}
+
+
 	}
+
 	return 0, nil
 }
