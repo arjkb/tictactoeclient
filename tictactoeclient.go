@@ -27,14 +27,18 @@ func playTicTacToe(conn net.Conn) (int, error) {
 	squares := []int{0, 1, 2, 4, 5, 6, 8, 9, 10}
 	board := tictactoe.GetEmptyBoard()
 
-	for {
-		board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
+	// var started bool
 
-		n, err := conn.Write([]byte(board))
-		if err != nil {
-			return n, fmt.Errorf("playTicTacToe error while writing %v", board)
-		}
-		fmt.Printf(" S: %q\n", board)
+	// make first move before the infinite loop starts
+	board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
+	n, err := conn.Write([]byte(board))
+	if err != nil {
+		return n, fmt.Errorf("playTicTacToe first move error while writing %v", board)
+	}
+	fmt.Printf(" S: %q\n", board)
+
+	for {
+		// board, _ = tictactoe.MakeRandomMove(board, squares, CLIENTSYMBOL)
 
 		bytesFromServer := make([]byte, 11)
 		n, err = conn.Read(bytesFromServer)
