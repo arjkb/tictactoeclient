@@ -22,14 +22,6 @@ func main() {
 }
 
 func playTicTacToe(conn net.Conn) (int, error) {
-	const (
-		CLIENTWON = "client won"
-		SERVERWON = "server won"
-
-		CLIENTSYMBOL = 'X'
-		SERVERSYMBOL = 'O'
-	)
-
 	var rboard string
 	var sboard string = tictactoe.GetEmptyBoard()
 	var clientWon, serverWon bool
@@ -38,7 +30,7 @@ func playTicTacToe(conn net.Conn) (int, error) {
 	var err error
 
 	// make first move before the infinite loop starts
-	sboard, _ = tictactoe.MakeRandomMove(sboard, tictactoe.AllSquares, CLIENTSYMBOL)
+	sboard, _ = tictactoe.MakeRandomMove(sboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
 	n, err = conn.Write([]byte(sboard))
 	if err != nil {
 		return n, fmt.Errorf("playTicTacToe first move error while writing %v", sboard)
@@ -67,16 +59,16 @@ InfiniteLoop:
 			return n, fmt.Errorf("playTicTacToe() server made %d moves", mvCnt)
 		}
 
-		if tictactoe.HasWon(rboard, SERVERSYMBOL) {
-			sboard = SERVERWON
+		if tictactoe.HasWon(rboard, tictactoe.SERVERSYMBOL) {
+			sboard = tictactoe.SERVERWON
 			serverWon = true
-		} else if win, ptrn := tictactoe.CanWinNext(rboard, CLIENTSYMBOL); win {
-			sboard, _ = tictactoe.MakeWinMove(rboard, ptrn, CLIENTSYMBOL)
+		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.CLIENTSYMBOL); win {
+			sboard, _ = tictactoe.MakeWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
 			clientWon = true
-		} else if win, ptrn := tictactoe.CanWinNext(rboard, SERVERSYMBOL); win {
-			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, CLIENTSYMBOL)
+		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.SERVERSYMBOL); win {
+			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
 		} else {
-			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, CLIENTSYMBOL)
+			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
 			if err != nil {
 				sboard = "END"
 			}
@@ -89,13 +81,14 @@ InfiniteLoop:
 		fmt.Printf(" S: %q\n", sboard)
 
 		switch {
-		case sboard == "END":
+		case sboard == tictactoe.TIE:
+			fmt.Println(tictactoe.TIE)
 			break InfiniteLoop
 		case serverWon:
-			fmt.Println(SERVERWON)
+			fmt.Println(tictactoe.SERVERWON)
 			break InfiniteLoop
 		case clientWon:
-			fmt.Println(CLIENTWON)
+			fmt.Println(tictactoe.CLIENTWON)
 			break InfiniteLoop
 		}
 	}
