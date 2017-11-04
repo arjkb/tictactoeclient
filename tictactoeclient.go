@@ -23,7 +23,14 @@ func main() {
 }
 
 func playTicTacToe(conn net.Conn) (int, error) {
-	const CLIENTSYMBOL = 'X'
+	const (
+		CLIENTWON = "client won"
+		SERVERWON = "server won"
+
+		CLIENTSYMBOL = 'X'
+		SERVERSYMBOL = 'O'
+	)
+
 	squares := []int{0, 1, 2, 4, 5, 6, 8, 9, 10}
 
 	var rboard string
@@ -60,7 +67,6 @@ func playTicTacToe(conn net.Conn) (int, error) {
 		if mvCnt, _ := tictactoe.GetMoveDifference(sboard, rboard); mvCnt != 1	{
 			return n, fmt.Errorf("playTicTacToe() server made %d moves", mvCnt)
 		}
-
 
 	}
 
