@@ -79,7 +79,6 @@ InfiniteLoop:
 		if err != nil {
 			return n, fmt.Errorf("playTicTacToe() error while writing %v", sboard)
 		}
-		fmt.Printf(" S: %q\n", sboard)
 
 		switch {
 		case sboard == tictactoe.TIE:
@@ -91,6 +90,8 @@ InfiniteLoop:
 		case clientWon:
 			fmt.Println(tictactoe.CLIENTWON)
 			break InfiniteLoop
+		default:
+			fmt.Printf(" S: %q\n", sboard)
 		}
 	}
 
