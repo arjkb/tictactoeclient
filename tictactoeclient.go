@@ -5,6 +5,7 @@ import (
 	"github.com/arjunkrishnababu96/tictactoe"
 	"log"
 	"net"
+	"strings"
 )
 
 func main() {
@@ -46,7 +47,8 @@ InfiniteLoop:
 		}
 
 		rboard = string(bytesFromServer)
-		if rboard == "END" {
+		if strings.Contains(rboard, tictactoe.TIE) {
+			fmt.Println("tie")
 			break
 		}
 
