@@ -60,12 +60,15 @@ InfiniteLoop:
 		}
 
 		if tictactoe.HasWon(rboard, tictactoe.SERVERSYMBOL) {
+			// fmt.Println("Server won")
 			sboard = tictactoe.SERVERWON
 			serverWon = true
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.CLIENTSYMBOL); win {
+			// fmt.Println("Client can win next")
 			sboard, _ = tictactoe.MakeWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
 			clientWon = true
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.SERVERSYMBOL); win {
+			// fmt.Println("Server can win next")
 			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
 		} else {
 			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
@@ -73,6 +76,7 @@ InfiniteLoop:
 				// no more empty positions
 				sboard = tictactoe.TIE
 			}
+			// fmt.Printf(" Random %v %v\n", rboard, sboard)
 		}
 
 		n, err = conn.Write([]byte(sboard))
