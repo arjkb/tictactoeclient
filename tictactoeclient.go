@@ -72,7 +72,10 @@ InfiniteLoop:
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.SERVERSYMBOL); win {
 			// fmt.Println("Server can win next")
 			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
-		} else {
+		} else if tictactoe.IsFree(rboard, 5){
+			// can play center
+			sboard, _ = tictactoe.MakeMove(rboard, 5, tictactoe.CLIENTSYMBOL)
+		}	else {
 			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
 			if err != nil {
 				// no more empty positions
