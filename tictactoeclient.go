@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/arjunkrishnababu96/tictactoe"
 	"log"
-	"os"
 	"net"
+	"os"
 	"strings"
 )
 
