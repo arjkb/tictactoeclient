@@ -73,25 +73,25 @@ InfiniteLoop:
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.SERVERSYMBOL); win {
 			fmt.Println("Server can win next")
 			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
-		} else if tictactoe.IsFree(rboard, 5){
+		} else if tictactoe.IsFree(rboard, 5) {
 			// can play center
 			sboard, _ = tictactoe.MakeMove(rboard, 5, tictactoe.CLIENTSYMBOL)
 			fmt.Println("playing center! %v %v", rboard, sboard)
 
 			// DOWN: Play opposite corner
-		} else if rboard[0] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 10)	{
+		} else if rboard[0] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 10) {
 			sboard, _ = tictactoe.MakeMove(rboard, 10, tictactoe.CLIENTSYMBOL)
-		} else if rboard[2] == tictactoe.SERVERSYMBOL	&& tictactoe.IsFree(rboard, 8)	{
+		} else if rboard[2] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 8) {
 			sboard, _ = tictactoe.MakeMove(rboard, 8, tictactoe.CLIENTSYMBOL)
-		} else if rboard[8] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 2)	{
+		} else if rboard[8] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 2) {
 			sboard, _ = tictactoe.MakeMove(rboard, 2, tictactoe.CLIENTSYMBOL)
-		} else if rboard[10] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 0)	{
+		} else if rboard[10] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 0) {
 			sboard, _ = tictactoe.MakeMove(rboard, 0, tictactoe.CLIENTSYMBOL)
 
 			// DOWN: Play empty corner
 		} else if tictactoe.IsFree(rboard, 0) {
 			sboard, _ = tictactoe.MakeMove(rboard, 0, tictactoe.CLIENTSYMBOL)
-		}	else if tictactoe.IsFree(rboard, 2) {
+		} else if tictactoe.IsFree(rboard, 2) {
 			sboard, _ = tictactoe.MakeMove(rboard, 2, tictactoe.CLIENTSYMBOL)
 		} else if tictactoe.IsFree(rboard, 8) {
 			sboard, _ = tictactoe.MakeMove(rboard, 8, tictactoe.CLIENTSYMBOL)
