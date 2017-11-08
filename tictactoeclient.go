@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"github.com/arjunkrishnababu96/tictactoe"
 	"log"
+	"os"
 	"net"
 	"strings"
 )
 
 func main() {
-	fmt.Println("I'm client!")
-	conn, err := net.Dial("tcp", "127.0.0.1:7775")
+	addr := os.Args[1]
+	fmt.Println("Connecting to", addr)
+	conn, err := net.Dial("tcp", addr)
 	if err != nil {
 		log.Fatalf(" main: ", err)
 	}
