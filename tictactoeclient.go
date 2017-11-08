@@ -63,20 +63,20 @@ InfiniteLoop:
 		}
 
 		if tictactoe.HasWon(rboard, tictactoe.SERVERSYMBOL) {
-			fmt.Println("Server won")
+			// fmt.Println("Server won")
 			sboard = tictactoe.SERVERWON
 			serverWon = true
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.CLIENTSYMBOL); win {
-			fmt.Println("Client can win next")
+			// fmt.Println("Client can win next")
 			sboard, _ = tictactoe.MakeWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
 			clientWon = true
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.SERVERSYMBOL); win {
-			fmt.Println("Server can win next")
+			// fmt.Println("Server can win next")
 			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
 		} else if tictactoe.IsFree(rboard, 5) {
 			// can play center
 			sboard, _ = tictactoe.MakeMove(rboard, 5, tictactoe.CLIENTSYMBOL)
-			fmt.Println("playing center! %v %v", rboard, sboard)
+			// fmt.Println("playing center! %v %v", rboard, sboard)
 
 			// DOWN: Play opposite corner
 		} else if rboard[0] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 10) {
@@ -100,7 +100,7 @@ InfiniteLoop:
 
 		} else {
 			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
-			fmt.Println("playing random! %v %v", rboard, sboard)
+			// fmt.Println("playing random! %v %v", rboard, sboard)
 			if err != nil {
 				// no more empty positions
 				sboard = tictactoe.TIE
