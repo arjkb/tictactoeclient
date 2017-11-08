@@ -5,11 +5,12 @@ import (
 	"github.com/arjunkrishnababu96/tictactoe"
 	"log"
 	"net"
+	"strings"
 )
 
 func main() {
 	fmt.Println("I'm client!")
-	conn, err := net.Dial("tcp", "127.0.0.1:7776")
+	conn, err := net.Dial("tcp", "127.0.0.1:7775")
 	if err != nil {
 		log.Fatalf(" main: ", err)
 	}
@@ -30,7 +31,8 @@ func playTicTacToe(conn net.Conn) (int, error) {
 	var err error
 
 	// make first move before the infinite loop starts
-	sboard, _ = tictactoe.MakeRandomMove(sboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
+	// sboard, _ = tictactoe.MakeRandomMove(sboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
+	sboard, _ = tictactoe.MakeMove(sboard, 5, tictactoe.CLIENTSYMBOL)
 	n, err = conn.Write([]byte(sboard))
 	if err != nil {
 		return n, fmt.Errorf("playTicTacToe first move error while writing %v", sboard)
@@ -46,7 +48,8 @@ InfiniteLoop:
 		}
 
 		rboard = string(bytesFromServer)
-		if rboard == "END" {
+		if strings.Contains(rboard, tictactoe.TIE) {
+			fmt.Println("tie")
 			break
 		}
 
@@ -60,19 +63,49 @@ InfiniteLoop:
 		}
 
 		if tictactoe.HasWon(rboard, tictactoe.SERVERSYMBOL) {
+			// fmt.Println("Server won")
 			sboard = tictactoe.SERVERWON
 			serverWon = true
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.CLIENTSYMBOL); win {
+			// fmt.Println("Client can win next")
 			sboard, _ = tictactoe.MakeWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
 			clientWon = true
 		} else if win, ptrn := tictactoe.CanWinNext(rboard, tictactoe.SERVERSYMBOL); win {
+			// fmt.Println("Server can win next")
 			sboard, _ = tictactoe.BlockWinMove(rboard, ptrn, tictactoe.CLIENTSYMBOL)
+		} else if tictactoe.IsFree(rboard, 5) {
+			// can play center
+			sboard, _ = tictactoe.MakeMove(rboard, 5, tictactoe.CLIENTSYMBOL)
+			// fmt.Println("playing center! %v %v", rboard, sboard)
+
+			// DOWN: Play opposite corner
+		} else if rboard[0] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 10) {
+			sboard, _ = tictactoe.MakeMove(rboard, 10, tictactoe.CLIENTSYMBOL)
+		} else if rboard[2] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 8) {
+			sboard, _ = tictactoe.MakeMove(rboard, 8, tictactoe.CLIENTSYMBOL)
+		} else if rboard[8] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 2) {
+			sboard, _ = tictactoe.MakeMove(rboard, 2, tictactoe.CLIENTSYMBOL)
+		} else if rboard[10] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 0) {
+			sboard, _ = tictactoe.MakeMove(rboard, 0, tictactoe.CLIENTSYMBOL)
+
+			// DOWN: Play empty corner
+		} else if tictactoe.IsFree(rboard, 0) {
+			sboard, _ = tictactoe.MakeMove(rboard, 0, tictactoe.CLIENTSYMBOL)
+		} else if tictactoe.IsFree(rboard, 2) {
+			sboard, _ = tictactoe.MakeMove(rboard, 2, tictactoe.CLIENTSYMBOL)
+		} else if tictactoe.IsFree(rboard, 8) {
+			sboard, _ = tictactoe.MakeMove(rboard, 8, tictactoe.CLIENTSYMBOL)
+		} else if tictactoe.IsFree(rboard, 10) {
+			sboard, _ = tictactoe.MakeMove(rboard, 10, tictactoe.CLIENTSYMBOL)
+
 		} else {
 			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
+			// fmt.Println("playing random! %v %v", rboard, sboard)
 			if err != nil {
 				// no more empty positions
 				sboard = tictactoe.TIE
 			}
+			// fmt.Printf(" Random %v %v\n", rboard, sboard)
 		}
 
 		n, err = conn.Write([]byte(sboard))
