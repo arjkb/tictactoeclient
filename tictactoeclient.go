@@ -78,6 +78,7 @@ InfiniteLoop:
 			sboard, _ = tictactoe.MakeMove(rboard, 5, tictactoe.CLIENTSYMBOL)
 			fmt.Println("playing center! %v %v", rboard, sboard)
 
+			// DOWN: Play opposite corner
 		} else if rboard[0] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 10)	{
 			sboard, _ = tictactoe.MakeMove(rboard, 10, tictactoe.CLIENTSYMBOL)
 		} else if rboard[2] == tictactoe.SERVERSYMBOL	&& tictactoe.IsFree(rboard, 8)	{
