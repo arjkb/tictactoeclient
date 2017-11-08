@@ -86,7 +86,18 @@ InfiniteLoop:
 			sboard, _ = tictactoe.MakeMove(rboard, 2, tictactoe.CLIENTSYMBOL)
 		} else if rboard[10] == tictactoe.SERVERSYMBOL && tictactoe.IsFree(rboard, 0)	{
 			sboard, _ = tictactoe.MakeMove(rboard, 0, tictactoe.CLIENTSYMBOL)
-		}	else {
+
+			// DOWN: Play empty corner
+		} else if tictactoe.IsFree(rboard, 0) {
+			sboard, _ = tictactoe.MakeMove(rboard, 0, tictactoe.CLIENTSYMBOL)
+		}	else if tictactoe.IsFree(rboard, 2) {
+			sboard, _ = tictactoe.MakeMove(rboard, 2, tictactoe.CLIENTSYMBOL)
+		} else if tictactoe.IsFree(rboard, 8) {
+			sboard, _ = tictactoe.MakeMove(rboard, 8, tictactoe.CLIENTSYMBOL)
+		} else if tictactoe.IsFree(rboard, 10) {
+			sboard, _ = tictactoe.MakeMove(rboard, 10, tictactoe.CLIENTSYMBOL)
+
+		} else {
 			sboard, err = tictactoe.MakeRandomMove(rboard, tictactoe.AllSquares, tictactoe.CLIENTSYMBOL)
 			fmt.Println("playing random! %v %v", rboard, sboard)
 			if err != nil {
