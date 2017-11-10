@@ -115,6 +115,12 @@ InfiniteLoop:
 			return n, fmt.Errorf("playTicTacToe() error while writing %v", sboard)
 		}
 
+		if !tictactoe.IsAnyFree(sboard)	{
+			// checks for tie after client made a move
+			sboard = tictactoe.TIE
+			conn.Write([]byte(sboard))
+		}
+
 		switch {
 		case sboard == tictactoe.TIE:
 			fmt.Println(tictactoe.TIE)
